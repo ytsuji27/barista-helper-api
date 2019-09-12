@@ -22,10 +22,10 @@ mongo.connect(url, {
 const morgan = require('morgan');
 app.use(morgan('short'));
 
-// MIDDLEWARES - Function that executes when a specific route is hit
-app.use('/users', () => {
-  console.log('This is a middleware');
-})
+// MIDDLEWARES - Function that executes when a specific route is hit (like auth)
+// app.use('/users', () => {
+//   console.log('This is a middleware');
+// })
 
 // ROUTES
 app.get('/', (req, res) => {
