@@ -1,30 +1,30 @@
-// To start server, npm start
-
+// Setting up Express
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
-require('dotenv/config');
 
-// MongoDB stuff
+const bodyParser = require('body-parser');
+require('dotenv/config');
+app.use(bodyParser.json());
+// ------------ DATABASE ------------ //
 const mongo = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
+const mongoose = require('mongoose');
+
+// Connect to DB
+mongoose.connect(process.env.DB_CONNECTION,{ 
+  useNewUrlParser: true, 
+  useUnifiedTopology: true 
+}, () => console.log('connected to DB!')
+)
 
 
-
-// Morgan helps to log http requests
-// 'short' specifies the type of log (there are other options)
-const morgan = require('morgan');
-app.use(morgan('short'));
-
-// MIDDLEWARES - Function that executes when a specific route is hit (like auth)
-// app.use('/users', () => {
-//   console.log('This is a middleware');
-// })
-
+// ------------ ROUTES ------------ //
 // Import Routes
 const postsRoute = require('./routes/posts');
 
+// Middlewares - Function that executes when a specific route is hit (like auth)
 app.use('/posts', postsRoute);
+
 
 // ROUTES
 app.get('/', (req, res) => {
@@ -39,11 +39,15 @@ app.get('/users', (req, res) => {
   // res.send('Nodemon auto updates when I save this file')
 })
 
-// Connect to DB
-mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true, useUnifiedTopology: true }, () => console.log('connected to DB!'))
 
+// ------------ SERVER ------------ //
 // Start listening to server
 const port = 4000;
 app.listen(port, () => {
   console.log(`Server is up and listening on ${port}...`)
 })
+
+// Morgan helps to log http requests
+// 'short' specifies the type of log (there are other options)
+const morgan = require('morgan');
+app.use(morgan('short'));
