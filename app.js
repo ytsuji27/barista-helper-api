@@ -2,20 +2,14 @@
 
 const express = require('express');
 const app = express();
+const mongoose = require('mongoose');
+require('dotenv/config');
 
 // MongoDB stuff
 const mongo = require('mongodb').MongoClient;
 const url = 'mongodb://localhost:27017';
 
-mongo.connect(url, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}, (err, client) => {
-  if (err) {
-    console.error(err);
-    return;
-  }
-})
+
 
 // Morgan helps to log http requests
 // 'short' specifies the type of log (there are other options)
@@ -26,6 +20,11 @@ app.use(morgan('short'));
 // app.use('/users', () => {
 //   console.log('This is a middleware');
 // })
+
+// Import Routes
+const postsRoute = require('./routes/posts');
+
+app.use('/posts', postsRoute);
 
 // ROUTES
 app.get('/', (req, res) => {
@@ -39,6 +38,9 @@ app.get('/users', (req, res) => {
   res.json([user1, user2]);
   // res.send('Nodemon auto updates when I save this file')
 })
+
+// Connect to DB
+mongoose.connect(process.env.DB_CONNECTION,{ useNewUrlParser: true, useUnifiedTopology: true }, () => console.log('connected to DB!'))
 
 // Start listening to server
 const port = 4000;
